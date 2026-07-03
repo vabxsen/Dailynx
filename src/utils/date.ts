@@ -19,3 +19,17 @@ export function shiftKey(days: number, from: Date = new Date()): string {
 
   return todayKey(d);
 }
+
+/** Ordered list of the last N day-keys ending today (oldest first). */
+export function lastNDays(n: number, today: string = todayKey()): string[] {
+  const base = new Date(`${today}T00:00:00`);
+  const out: string[] = [];
+
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(base);
+    d.setDate(d.getDate() - i);
+    out.push(todayKey(d));
+  }
+
+  return out;
+}

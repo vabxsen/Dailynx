@@ -72,6 +72,14 @@ export async function setCompletion(
   });
 }
 
+/** Edits a habit's title and/or scheduled time. */
+export async function updateHabit(
+  id: string,
+  patch: { title?: string; time?: string }
+) {
+  await updateDoc(doc(db, "habits", id), patch);
+}
+
 export async function deleteHabit(id: string) {
   await deleteDoc(doc(db, "habits", id));
 }

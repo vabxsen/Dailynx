@@ -1,18 +1,25 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { useAuth } from "../contexts/AuthContext";
+import { ProfileProvider } from "../contexts/ProfileContext";
+import { HabitsProvider } from "../contexts/HabitsContext";
+
+import MainLayout from "../layouts/MainLayout";
 import Login from "../pages/Login/Login";
-import Dashboard from "../pages/Dashboard/Dashboard";
+import DashboardPage from "../pages/Dashboard/DashboardPage";
+import HabitsPage from "../pages/Habits/HabitsPage";
+import AnalyticsPage from "../pages/Analytics/AnalyticsPage";
+import CalendarPage from "../pages/Calendar/CalendarPage";
+import SettingsPage from "../pages/Settings/SettingsPage";
 
 function FullScreenLoader() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950">
-      <div className="h-10 w-10 animate-spin rounded-full border-2 border-violet-500 border-t-transparent" />
+    <div className="flex min-h-screen items-center justify-center bg-ink">
+      <div className="h-10 w-10 animate-spin rounded-full border-2 border-lime border-t-transparent" />
     </div>
   );
 }
 
-/** Only for signed-in users; otherwise bounce to /login. */
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
 
@@ -21,7 +28,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return user ? children : <Navigate to="/login" replace />;
 }
 
-/** Only for signed-out users; if already signed in, send to the dashboard. */
 function GuestRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
 
@@ -44,13 +50,22 @@ export default function AppRouter() {
         />
 
         <Route
-          path="/"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <ProfileProvider>
+                <HabitsProvider>
+                  <MainLayout />
+                </HabitsProvider>
+              </ProfileProvider>
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/habits" element={<HabitsPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

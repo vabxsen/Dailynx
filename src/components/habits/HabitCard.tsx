@@ -1,12 +1,13 @@
+import { motion } from "framer-motion";
+import { Check, Flame } from "lucide-react";
+
 type HabitCardProps = {
   title: string;
   time: string;
   completed: boolean;
   currentStreak: number;
   monthlyCount: number;
-  bestStreak: number;
   onToggle: () => void;
-  onDelete: () => void;
 };
 
 function HabitCard({
@@ -15,102 +16,61 @@ function HabitCard({
   completed,
   currentStreak,
   monthlyCount,
-  bestStreak,
   onToggle,
-  onDelete,
 }: HabitCardProps) {
   return (
-    <div
-      className={`group flex items-center gap-4 rounded-2xl border p-4 transition ${
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      whileHover={{ y: -2 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      className={`flex items-center gap-4 rounded-2xl border p-4 transition ${
         completed
-          ? "border-emerald-500/30 bg-emerald-500/5"
-          : "border-white/10 bg-slate-900/60 hover:border-white/20"
+          ? "border-lime/30 bg-lime/[0.06]"
+          : "border-white/[0.06] bg-white/[0.02] hover:border-white/15"
       }`}
     >
-      <button
+      <motion.button
+        whileTap={{ scale: 0.85 }}
         onClick={onToggle}
         aria-label={completed ? "Mark as not done" : "Mark as done"}
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition ${
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition ${
           completed
-            ? "border-emerald-500 bg-emerald-500 text-white"
-            : "border-slate-600 hover:border-violet-400"
+            ? "border-lime bg-lime text-ink"
+            : "border-zinc-600 text-transparent hover:border-lime"
         }`}
       >
-        {completed && <CheckIcon />}
-      </button>
+        <Check className="h-4 w-4" strokeWidth={3} />
+      </motion.button>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           {time && (
-            <span className="rounded-md bg-violet-500/10 px-2 py-0.5 font-mono text-xs text-violet-300">
+            <span className="rounded-md bg-white/5 px-2 py-0.5 font-mono text-xs text-zinc-300">
               {time}
             </span>
           )}
-
           <span
-            className={`truncate text-base font-medium ${
-              completed ? "text-slate-500 line-through" : "text-white"
+            className={`truncate font-medium ${
+              completed ? "text-zinc-500 line-through" : "text-white"
             }`}
           >
             {title}
           </span>
         </div>
 
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400">
-          <span className="text-amber-400">
-            🔥 {currentStreak} day{currentStreak === 1 ? "" : "s"}
+        <div className="mt-1.5 flex items-center gap-3 text-xs text-zinc-400">
+          <span className="flex items-center gap-1 text-lime">
+            <Flame className="h-3.5 w-3.5" />
+            {currentStreak} day{currentStreak === 1 ? "" : "s"}
           </span>
-          <span className="text-slate-600">·</span>
+          <span className="text-zinc-600">·</span>
           <span>{monthlyCount} this month</span>
-          <span className="text-slate-600">·</span>
-          <span>best {bestStreak}</span>
         </div>
       </div>
-
-      <button
-        onClick={onDelete}
-        aria-label="Delete habit"
-        className="shrink-0 rounded-lg p-2 text-slate-500 opacity-100 transition hover:bg-red-500/10 hover:text-red-400 md:opacity-0 md:group-hover:opacity-100"
-      >
-        <TrashIcon />
-      </button>
-    </div>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      className="h-4 w-4"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
-
-function TrashIcon() {
-  return (
-    <svg
-      className="h-5 w-5"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-      <line x1="10" y1="11" x2="10" y2="17" />
-      <line x1="14" y1="11" x2="14" y2="17" />
-    </svg>
+    </motion.div>
   );
 }
 
