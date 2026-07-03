@@ -93,6 +93,9 @@ function DashboardPage() {
   const isDoneToday = (habit: Habit) => habit.completedDates.includes(today);
 
   const completedCount = habits.filter(isDoneToday).length;
+  const progress = habits.length
+    ? Math.round((completedCount / habits.length) * 100)
+    : 0;
 
   const bestActiveStreak = habits.reduce(
     (max, h) => Math.max(max, currentStreak(h.completedDates, today)),
@@ -106,48 +109,69 @@ function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-4xl font-bold text-white">Dashboard</h1>
-
-        <p className="text-zinc-400">Track your daily productivity.</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
           title="Today's Progress"
           value={`${completedCount} / ${habits.length}`}
           icon="🎯"
+          accent="emerald"
         />
 
         <StatCard
           title="Best Active Streak"
-          value={`${bestActiveStreak} Days`}
+          value={`${bestActiveStreak} ${bestActiveStreak === 1 ? "day" : "days"}`}
           icon="🔥"
+          accent="amber"
         />
 
-        <StatCard title="This Month" value={`${monthTotal}`} icon="🏆" />
+        <StatCard
+          title="This Month"
+          value={`${monthTotal}`}
+          icon="🏆"
+          accent="violet"
+        />
       </div>
 
       <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-white">Today's Habits</h2>
+          <span className="text-sm text-slate-400">{progress}% complete</span>
+        </div>
+
+        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-violet-500 to-emerald-500 transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
         <AddHabit onAdd={addHabit} />
 
-        <h2 className="text-2xl font-bold text-white">Today's Habits</h2>
-
-        <div className="space-y-3">
-          {habits.map((habit, index) => (
-            <HabitCard
-              key={habit.id}
-              title={habit.title}
-              time={habit.time}
-              completed={isDoneToday(habit)}
-              currentStreak={currentStreak(habit.completedDates, today)}
-              monthlyCount={monthlyCount(habit.completedDates)}
-              bestStreak={bestStreak(habit.completedDates)}
-              onToggle={() => toggleHabit(index)}
-              onDelete={() => deleteHabit(index)}
-            />
-          ))}
-        </div>
+        {habits.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-white/10 bg-slate-900/40 p-10 text-center">
+            <div className="mb-3 text-4xl">📝</div>
+            <p className="font-medium text-white">No habits yet</p>
+            <p className="mt-1 text-sm text-slate-400">
+              Add your first habit above to start building streaks.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {habits.map((habit, index) => (
+              <HabitCard
+                key={habit.id}
+                title={habit.title}
+                time={habit.time}
+                completed={isDoneToday(habit)}
+                currentStreak={currentStreak(habit.completedDates, today)}
+                monthlyCount={monthlyCount(habit.completedDates)}
+                bestStreak={bestStreak(habit.completedDates)}
+                onToggle={() => toggleHabit(index)}
+                onDelete={() => deleteHabit(index)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
