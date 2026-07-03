@@ -9,6 +9,17 @@ service cloud.firestore {
         && request.auth.uid == userId;
     }
 
+    // To-dos: a signed-in user may only touch documents they own.
+    match /todos/{todoId} {
+      allow read, delete: if request.auth != null
+        && resource.data.uid == request.auth.uid;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid;
+      allow update: if request.auth != null
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid;
+    }
+
     // Habits: a signed-in user may only touch documents they own.
     match /habits/{habitId} {
       // Reading / deleting an existing doc: it must already belong to you.
