@@ -65,7 +65,7 @@ function SettingsPage() {
               <Smartphone className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-medium text-white">Install LifeOS</p>
+              <p className="font-medium text-white">Install Dailynx</p>
               <p className="text-sm text-zinc-400">
                 Add it to your home screen for a full-screen, offline app.
               </p>
@@ -94,7 +94,7 @@ function SettingsPage() {
         </div>
       </Section>
 
-      <p className="pt-2 text-center text-xs text-zinc-600">LifeOS · v1.0</p>
+      <p className="pt-2 text-center text-xs text-zinc-600">Dailynx · v1.0</p>
 
       <ProfileModal open={editing} onClose={() => setEditing(false)} />
     </div>

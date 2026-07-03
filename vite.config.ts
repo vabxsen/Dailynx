@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'pwa-icon.svg'],
       manifest: {
-        name: 'LifeOS',
-        short_name: 'LifeOS',
+        name: 'Dailynx',
+        short_name: 'Dailynx',
         description: 'Your daily habit time table with streaks and cloud sync.',
         theme_color: '#0f172a',
         background_color: '#0f172a',

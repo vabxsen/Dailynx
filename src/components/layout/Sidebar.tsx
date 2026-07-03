@@ -11,7 +11,7 @@ function Sidebar() {
         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-lime text-lg text-ink">
           🚀
         </span>
-        <h1 className="text-xl font-bold tracking-tight text-white">LifeOS</h1>
+        <h1 className="text-xl font-bold tracking-tight text-white">Dailynx</h1>
       </div>
 
       <nav className="flex-1 space-y-1">

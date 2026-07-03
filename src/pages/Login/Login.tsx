@@ -29,7 +29,7 @@ export default function Login() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-3xl shadow-lg shadow-violet-600/30">
             🚀
           </div>
-          <h1 className="text-3xl font-bold text-white">LifeOS</h1>
+          <h1 className="text-3xl font-bold text-white">Dailynx</h1>
           <p className="mt-2 text-slate-400">
             Your daily habits, streaks, and progress — all in one place.
           </p>

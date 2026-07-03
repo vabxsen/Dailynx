@@ -80,7 +80,7 @@ function InstallButton({ variant = "full" }: Props) {
                 <Download className="h-6 w-6" />
               </div>
 
-              <h3 className="text-lg font-semibold text-white">Install LifeOS</h3>
+              <h3 className="text-lg font-semibold text-white">Install Dailynx</h3>
 
               {isIOS ? (
                 <p className="mt-2 flex flex-wrap items-center justify-center gap-1 text-sm text-zinc-400">
