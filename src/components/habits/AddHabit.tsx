@@ -1,16 +1,17 @@
 import { useState } from "react";
 
 type Props = {
-  onAdd: (title: string) => void;
+  onAdd: (title: string, time: string) => void;
 };
 
 function AddHabit({ onAdd }: Props) {
   const [title, setTitle] = useState("");
+  const [time, setTime] = useState("09:00");
 
   const handleAdd = () => {
     if (!title.trim()) return;
 
-    onAdd(title);
+    onAdd(title, time);
     setTitle("");
   };
 
@@ -19,8 +20,16 @@ function AddHabit({ onAdd }: Props) {
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleAdd()}
         placeholder="New Habit..."
         className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-white outline-none"
+      />
+
+      <input
+        type="time"
+        value={time}
+        onChange={(e) => setTime(e.target.value)}
+        className="bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-white outline-none"
       />
 
       <button
