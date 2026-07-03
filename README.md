@@ -1,75 +1,49 @@
-# React + TypeScript + Vite
+# Dailynx
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A personal, installable habit tracker — build your daily time table, check off
+habits, and watch your streaks grow. Everything syncs to the cloud and works
+offline as a PWA.
 
-Currently, two official plugins are available:
+**Live app:** https://lifeos-92f2c.web.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- 📅 **Daily time table** — schedule habits by time and check them off each day
+- 🔁 **Auto-reset at midnight** — completion is tracked per date, so today's
+  list clears itself at your local midnight (no server job needed)
+- 🔥 **Streaks & stats** — current streak, best streak, monthly counts, and a
+  today-progress bar
+- 📊 **Analytics** — weekly/monthly completion charts and a streak leaderboard
+- 🗓️ **Calendar heatmap** — see every day's completion at a glance
+- 👤 **Profile** — set your name, username, and bio
+- ☁️ **Cloud sync + offline** — Firebase Auth + Firestore with offline cache
+- 📱 **Installable PWA** — add to your home screen on any device
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the ESLint configuration
+- React + TypeScript + Vite
+- Tailwind CSS v4
+- Firebase (Auth + Firestore + Hosting)
+- framer-motion (animations), Recharts (charts), lucide-react (icons)
+- vite-plugin-pwa (service worker + manifest)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev      # start the dev server
+npm run build    # production build
+npm run lint     # lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+To run your own instance, create a Firebase project, enable Google
+authentication and Firestore, and replace the config in
+`src/firebase/firebase.ts`. Security rules live in `firestore.rules`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Deploy
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run build
+firebase deploy --only hosting          # deploy the site
+firebase deploy --only firestore:rules  # deploy security rules
 ```
