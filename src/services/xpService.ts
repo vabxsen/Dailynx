@@ -1,14 +1,11 @@
-import { doc, runTransaction, setDoc } from "firebase/firestore";
+import { doc, runTransaction } from "firebase/firestore";
 
 import { db } from "../firebase/firebase";
 
+// Fixed XP-per-completion amounts. Not user-editable: XP only ever grows
+// automatically as habits/tasks are completed.
 export const DEFAULT_HABIT_XP_REWARD = 10;
 export const DEFAULT_TASK_XP_REWARD = 5;
-
-export interface XpRewards {
-  habitXpReward: number;
-  taskXpReward: number;
-}
 
 export interface XpAwardResult {
   /** XP actually granted by this call (0 if it was already awarded before). */
@@ -86,9 +83,4 @@ export async function awardTodoXp(
 
     return { awarded: amount, totalXpBefore, totalXpAfter };
   });
-}
-
-/** Updates the configurable XP-per-completion defaults for a user. */
-export async function saveXpRewards(uid: string, patch: Partial<XpRewards>) {
-  await setDoc(doc(db, "users", uid), patch, { merge: true });
 }
