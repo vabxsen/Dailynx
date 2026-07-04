@@ -3,6 +3,7 @@ import {
   ListChecks,
   BarChart3,
   Calendar,
+  Moon,
   Settings,
   type LucideIcon,
 } from "lucide-react";
@@ -20,5 +21,6 @@ export const NAV_ITEMS: NavItem[] = [
   { to: "/habits", label: "Habits", icon: ListChecks },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/calendar", label: "Calendar", icon: Calendar },
+  { to: "/sleep", label: "Sleep", icon: Moon },
   { to: "/settings", label: "Settings", icon: Settings },
 ];

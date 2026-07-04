@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { ProfileProvider } from "../contexts/ProfileContext";
 import { XPProvider } from "../contexts/XPContext";
 import { HabitsProvider } from "../contexts/HabitsContext";
+import { SleepProvider } from "../contexts/SleepContext";
 
 import MainLayout from "../layouts/MainLayout";
 import Login from "../pages/Login/Login";
@@ -11,6 +12,7 @@ import DashboardPage from "../pages/Dashboard/DashboardPage";
 import HabitsPage from "../pages/Habits/HabitsPage";
 import AnalyticsPage from "../pages/Analytics/AnalyticsPage";
 import CalendarPage from "../pages/Calendar/CalendarPage";
+import SleepPage from "../pages/Sleep/SleepPage";
 import SettingsPage from "../pages/Settings/SettingsPage";
 
 function FullScreenLoader() {
@@ -56,7 +58,9 @@ export default function AppRouter() {
               <ProfileProvider>
                 <XPProvider>
                   <HabitsProvider>
-                    <MainLayout />
+                    <SleepProvider>
+                      <MainLayout />
+                    </SleepProvider>
                   </HabitsProvider>
                 </XPProvider>
               </ProfileProvider>
@@ -67,6 +71,7 @@ export default function AppRouter() {
           <Route path="/habits" element={<HabitsPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/sleep" element={<SleepPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
