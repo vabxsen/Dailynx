@@ -3,25 +3,63 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    function usernameFormatValid(v) {
+      return v == '' || v.matches('^[a-z0-9_]{3,20}$');
+    }
+
     // Profiles: a user can only read and write their own profile document.
-    // XP is permanent, so a profile update can never lower xpTotal.
+    // XP is permanent, so a profile update can never lower xpTotal. A
+    // username is free to set once, then locked after one change: it may
+    // only change again if it was empty, or if usernameEditsUsed < 1, and
+    // usernameEditsUsed can only ever move forward by exactly the right step.
     match /users/{userId} {
       allow read: if request.auth != null
         && request.auth.uid == userId;
 
       allow create: if request.auth != null
-        && request.auth.uid == userId;
+        && request.auth.uid == userId
+        && usernameFormatValid(request.resource.data.get('username', ''));
 
       allow update: if request.auth != null
         && request.auth.uid == userId
+        && usernameFormatValid(request.resource.data.get('username', ''))
         && (
           !('xpTotal' in request.resource.data)
           || !('xpTotal' in resource.data)
           || request.resource.data.xpTotal >= resource.data.xpTotal
+        )
+        && (
+          (
+            request.resource.data.get('username', '') == resource.data.get('username', '')
+            && request.resource.data.get('usernameEditsUsed', 0) == resource.data.get('usernameEditsUsed', 0)
+          )
+          || (
+            request.resource.data.get('username', '') != resource.data.get('username', '')
+            && (resource.data.get('username', '') == '' || resource.data.get('usernameEditsUsed', 0) < 1)
+            && request.resource.data.get('usernameEditsUsed', 0) ==
+                 resource.data.get('usernameEditsUsed', 0) + (resource.data.get('username', '') == '' ? 0 : 1)
+          )
         );
 
       allow delete: if request.auth != null
         && request.auth.uid == userId;
+    }
+
+    // Username reservations: doc ID is the lowercase username itself, so
+    // "already exists" collisions are exactly what keeps them globally
+    // unique. Only create/delete — an existing reservation is never
+    // reassigned to a different owner in place.
+    match /usernames/{usernameId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && usernameId.matches('^[a-z0-9_]{3,20}$');
+
+      allow delete: if request.auth != null
+        && resource.data.uid == request.auth.uid;
+
+      allow update: if false;
     }
 
     // To-dos: a signed-in user may only touch documents they own.

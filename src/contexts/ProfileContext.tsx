@@ -12,12 +12,15 @@ import {
   saveProfile,
   type Profile,
 } from "../services/profileService";
+import { claimUsername } from "../services/usernameService";
 
 interface ProfileContextType {
   profile: Profile | null;
   /** Display name preferring the custom profile, falling back to Google. */
   displayName: string;
-  save: (profile: Profile) => Promise<void>;
+  save: (patch: { displayName: string; bio: string }) => Promise<void>;
+  /** Throws if the username is taken, invalid, or the one-time edit is used up. */
+  changeUsername: (username: string) => Promise<void>;
 }
 
 const ProfileContext = createContext<ProfileContextType | null>(null);
@@ -41,18 +44,31 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     };
   }, [user]);
 
-  const save = async (next: Profile) => {
+  const save = async (patch: { displayName: string; bio: string }) => {
     if (!user) return;
 
-    setProfile(next);
-    await saveProfile(user.uid, next);
+    setProfile((prev) => (prev ? { ...prev, ...patch } : prev));
+    await saveProfile(user.uid, patch);
+  };
+
+  const changeUsername = async (username: string) => {
+    if (!user) return;
+
+    const result = await claimUsername(user.uid, username, {
+      username: profile?.username ?? "",
+      usernameEditsUsed: profile?.usernameEditsUsed ?? 0,
+    });
+
+    setProfile((prev) => (prev ? { ...prev, ...result } : prev));
   };
 
   const displayName =
     profile?.displayName?.trim() || user?.displayName || "there";
 
   return (
-    <ProfileContext.Provider value={{ profile, displayName, save }}>
+    <ProfileContext.Provider
+      value={{ profile, displayName, save, changeUsername }}
+    >
       {children}
     </ProfileContext.Provider>
   );

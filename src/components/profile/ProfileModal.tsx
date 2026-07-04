@@ -1,10 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { Lock, X } from "lucide-react";
 
 import { useProfile } from "../../contexts/ProfileContext";
 import { useAuth } from "../../contexts/AuthContext";
-import type { Profile } from "../../services/profileService";
 
 type Props = {
   open: boolean;
@@ -25,14 +24,18 @@ function ProfileModal({ open, onClose }: Props) {
  */
 function ProfileDialog({ onClose }: { onClose: () => void }) {
   const { user } = useAuth();
-  const { profile, save } = useProfile();
+  const { profile, save, changeUsername } = useProfile();
 
-  const [form, setForm] = useState<Profile>({
+  const [form, setForm] = useState({
     displayName: profile?.displayName || user?.displayName || "",
     username: profile?.username || "",
     bio: profile?.bio || "",
   });
   const [saving, setSaving] = useState(false);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+
+  const currentUsername = profile?.username ?? "";
+  const usernameLocked = currentUsername !== "" && (profile?.usernameEditsUsed ?? 0) >= 1;
 
   // Close on Escape.
   useEffect(() => {
@@ -44,12 +47,26 @@ function ProfileDialog({ onClose }: { onClose: () => void }) {
 
   const handleSave = async () => {
     setSaving(true);
-    await save({
-      displayName: form.displayName.trim(),
-      username: form.username.trim(),
-      bio: form.bio.trim(),
-    });
-    onClose();
+    setUsernameError(null);
+
+    try {
+      const trimmedUsername = form.username.trim();
+      if (trimmedUsername !== currentUsername) {
+        await changeUsername(trimmedUsername);
+      }
+
+      await save({
+        displayName: form.displayName.trim(),
+        bio: form.bio.trim(),
+      });
+      onClose();
+    } catch (err) {
+      setUsernameError(
+        err instanceof Error ? err.message : "Something went wrong."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   const initial =
@@ -117,20 +134,40 @@ function ProfileDialog({ onClose }: { onClose: () => void }) {
           </Field>
 
           <Field label="Username">
-            <div className="flex items-center rounded-xl border border-white/10 bg-white/[0.03] px-4 transition focus-within:border-lime/50">
+            <div
+              className={`flex items-center rounded-xl border px-4 transition ${
+                usernameLocked
+                  ? "border-white/10 bg-white/[0.02]"
+                  : "border-white/10 bg-white/[0.03] focus-within:border-lime/50"
+              }`}
+            >
               <span className="text-zinc-500">@</span>
               <input
                 value={form.username}
+                disabled={usernameLocked}
                 onChange={(e) =>
                   setForm({
                     ...form,
-                    username: e.target.value.replace(/\s/g, ""),
+                    username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""),
                   })
                 }
                 placeholder="username"
-                className="w-full bg-transparent py-3 pl-1 text-white outline-none placeholder:text-zinc-600"
+                className="w-full bg-transparent py-3 pl-1 text-white outline-none placeholder:text-zinc-600 disabled:cursor-not-allowed disabled:text-zinc-500"
               />
+              {usernameLocked && <Lock className="h-4 w-4 shrink-0 text-zinc-500" />}
             </div>
+
+            {usernameError ? (
+              <p className="mt-1.5 text-xs text-red-400">{usernameError}</p>
+            ) : (
+              <p className="mt-1.5 text-xs text-zinc-500">
+                {usernameLocked
+                  ? "Locked — you've already used your one username change."
+                  : currentUsername
+                    ? "You can change this once. Choose carefully — it locks after that."
+                    : "This is permanent after one change, so pick carefully."}
+              </p>
+            )}
           </Field>
 
           <Field label="Bio">
