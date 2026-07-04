@@ -1,13 +1,19 @@
+import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
 import PageHeader from "../../components/layout/PageHeader";
 import AddHabit from "../../components/habits/AddHabit";
 import HabitManageRow from "../../components/habits/HabitManageRow";
+import ConfirmModal from "../../components/ui/ConfirmModal";
 import { useHabits } from "../../contexts/HabitsContext";
+import type { Habit } from "../../services/habitService";
 import { currentStreak, bestStreak, monthlyCount } from "../../utils/streak";
 
 function HabitsPage() {
   const { habits, today, addHabit, editHabit, removeHabit } = useHabits();
+
+  // Habit pending a delete confirmation.
+  const [deleteTarget, setDeleteTarget] = useState<Habit | null>(null);
 
   return (
     <div className="space-y-6">
@@ -37,12 +43,26 @@ function HabitsPage() {
                 bestStreak={bestStreak(habit.completedDates)}
                 monthlyCount={monthlyCount(habit.completedDates)}
                 onEdit={(patch) => editHabit(habit.id, patch)}
-                onDelete={() => removeHabit(habit.id)}
+                onDelete={() => setDeleteTarget(habit)}
               />
             ))}
           </AnimatePresence>
         </div>
       )}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="Delete this habit?"
+        message={
+          deleteTarget
+            ? `Do you really want to delete "${deleteTarget.title}"? This permanently removes it and its entire history.`
+            : ""
+        }
+        confirmLabel="Delete"
+        danger
+        onConfirm={() => deleteTarget && removeHabit(deleteTarget.id)}
+        onClose={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

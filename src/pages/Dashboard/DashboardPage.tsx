@@ -159,6 +159,7 @@ function DashboardPage() {
             : ""
         }
         confirmLabel="Uncheck"
+        danger
         onConfirm={() => uncheckTarget && toggleHabit(uncheckTarget.id)}
         onClose={() => setUncheckTarget(null)}
       />

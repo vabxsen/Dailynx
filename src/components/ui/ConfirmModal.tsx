@@ -8,6 +8,7 @@ type Props = {
   message: string;
   confirmLabel?: string;
   cancelLabel?: string;
+  danger?: boolean;
   onConfirm: () => void;
   onClose: () => void;
 };
@@ -18,6 +19,7 @@ function ConfirmModal({
   message,
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
+  danger = false,
   onConfirm,
   onClose,
 }: Props) {
@@ -39,7 +41,9 @@ function ConfirmModal({
             onConfirm();
             onClose();
           }}
-          className="flex-1 rounded-xl bg-lime py-3 font-semibold text-ink transition hover:brightness-95"
+          className={`flex-1 rounded-xl py-3 font-semibold transition hover:brightness-95 ${
+            danger ? "bg-red-500 text-white" : "bg-lime text-ink"
+          }`}
         >
           {confirmLabel}
         </motion.button>

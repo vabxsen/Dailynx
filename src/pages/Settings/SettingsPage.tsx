@@ -104,7 +104,8 @@ function SettingsPage() {
           <Heart className="h-4 w-4 text-red-500" />
           Credits
         </button>
-        <p className="text-xs text-zinc-600">Dailynx · v1.0</p>
+        <p className="text-xs text-zinc-600">Dailynx · v1.5</p>
+        <p className="text-xs text-zinc-600">Made in India 🇮🇳</p>
       </div>
 
       <ProfileModal open={editing} onClose={() => setEditing(false)} />
