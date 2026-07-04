@@ -20,19 +20,19 @@ export default function Login() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ink px-4">
       {/* ambient glow */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-violet-600/30 blur-3xl" />
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-lime/20 blur-3xl" />
 
-      <div className="relative w-full max-w-sm rounded-3xl border border-white/10 bg-slate-900/70 p-8 shadow-2xl backdrop-blur">
+      <div className="relative w-full max-w-sm rounded-3xl border border-white/10 bg-white/[0.03] p-8 shadow-2xl backdrop-blur">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-3xl shadow-lg shadow-violet-600/30">
-            🚀
-          </div>
+          <img
+            src="/app-icon.png"
+            alt="Dailynx"
+            className="mx-auto mb-4 h-20 w-20 rounded-3xl shadow-lg shadow-lime/20"
+          />
           <h1 className="text-3xl font-bold text-white">Dailynx</h1>
-          <p className="mt-2 text-slate-400">
-            Your daily habits, streaks, and progress — all in one place.
-          </p>
+          <p className="mt-2 text-zinc-400">Build better. Every day.</p>
         </div>
 
         <button
@@ -52,7 +52,7 @@ export default function Login() {
           <p className="mt-4 text-center text-sm text-red-400">{error}</p>
         )}
 
-        <p className="mt-6 text-center text-xs text-slate-500">
+        <p className="mt-6 text-center text-xs text-zinc-500">
           Free · Syncs across your devices · Works offline
         </p>
       </div>

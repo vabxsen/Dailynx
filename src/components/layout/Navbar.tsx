@@ -25,9 +25,11 @@ function Navbar({ onOpenProfile }: Props) {
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-white/[0.06] bg-ink/80 px-4 backdrop-blur md:h-20 md:px-8">
       <div className="flex items-center gap-3">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-lime text-base text-ink md:hidden">
-          🚀
-        </span>
+        <img
+          src="/app-icon.png"
+          alt="Dailynx"
+          className="h-8 w-8 rounded-lg md:hidden"
+        />
 
         <div>
           <h2 className="text-lg font-bold text-white md:text-2xl">

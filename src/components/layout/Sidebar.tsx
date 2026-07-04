@@ -8,9 +8,11 @@ function Sidebar() {
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-white/[0.06] bg-white/[0.015] p-5 md:flex">
       <div className="mb-10 flex items-center gap-2.5 px-2">
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-lime text-lg text-ink">
-          🚀
-        </span>
+        <img
+          src="/app-icon.png"
+          alt="Dailynx"
+          className="h-9 w-9 rounded-xl"
+        />
         <h1 className="text-xl font-bold tracking-tight text-white">Dailynx</h1>
       </div>
 
