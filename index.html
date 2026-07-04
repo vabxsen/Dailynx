@@ -7,6 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#020202" />
     <title>Dailynx</title>
+    <script>
+      // Capture the install prompt as early as possible — it can fire before
+      // the app bundle mounts. Stash it and let React read it via events.
+      window.__pwaPrompt = null;
+      window.addEventListener("beforeinstallprompt", function (e) {
+        e.preventDefault();
+        window.__pwaPrompt = e;
+        window.dispatchEvent(new Event("pwa:installable"));
+      });
+      window.addEventListener("appinstalled", function () {
+        window.__pwaPrompt = null;
+        window.dispatchEvent(new Event("pwa:installed"));
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
