@@ -105,7 +105,6 @@ function SettingsPage() {
           Credits
         </button>
         <p className="text-xs text-zinc-600">Dailynx · v1.5</p>
-        <p className="text-xs text-zinc-600">Made in India 🇮🇳</p>
       </div>
 
       <ProfileModal open={editing} onClose={() => setEditing(false)} />
@@ -125,6 +124,7 @@ function SettingsPage() {
             <Mail className="h-4 w-4" />
             cheeseburst06@gmail.com
           </a>
+          <p className="mt-3 text-xs text-zinc-600">Made in India</p>
         </div>
 
         <button
