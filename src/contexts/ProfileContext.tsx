@@ -8,6 +8,7 @@ import {
 
 import { useAuth } from "./AuthContext";
 import {
+  EMPTY_PROFILE,
   getProfile,
   saveProfile,
   type Profile,
@@ -47,7 +48,10 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   const save = async (patch: { displayName: string; bio: string }) => {
     if (!user) return;
 
-    setProfile((prev) => (prev ? { ...prev, ...patch } : prev));
+    // Merge onto EMPTY_PROFILE (not bail to null) — a user with no prior
+    // profile doc must still end up with real local state after saving,
+    // otherwise every future edit looks like a fresh first-time set.
+    setProfile((prev) => ({ ...(prev ?? EMPTY_PROFILE), ...patch }));
     await saveProfile(user.uid, patch);
   };
 
@@ -59,7 +63,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       usernameEditsUsed: profile?.usernameEditsUsed ?? 0,
     });
 
-    setProfile((prev) => (prev ? { ...prev, ...result } : prev));
+    setProfile((prev) => ({ ...(prev ?? EMPTY_PROFILE), ...result }));
   };
 
   const displayName =
