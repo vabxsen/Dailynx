@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Pencil, LogOut, Smartphone } from "lucide-react";
+import { Pencil, LogOut, Smartphone, Heart, Mail } from "lucide-react";
 
 import PageHeader from "../../components/layout/PageHeader";
 import InstallButton from "../../components/layout/InstallButton";
 import ProfileModal from "../../components/profile/ProfileModal";
+import Modal from "../../components/ui/Modal";
 import { useAuth } from "../../contexts/AuthContext";
 import { useProfile } from "../../contexts/ProfileContext";
 
@@ -11,6 +12,7 @@ function SettingsPage() {
   const { user, logout } = useAuth();
   const { profile, displayName } = useProfile();
   const [editing, setEditing] = useState(false);
+  const [credits, setCredits] = useState(false);
 
   const initial = displayName.charAt(0).toUpperCase();
 
@@ -94,9 +96,43 @@ function SettingsPage() {
         </div>
       </Section>
 
-      <p className="pt-2 text-center text-xs text-zinc-600">Dailynx · v1.0</p>
+      <div className="flex flex-col items-center gap-2 pt-2">
+        <button
+          onClick={() => setCredits(true)}
+          className="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
+        >
+          <Heart className="h-4 w-4 text-red-500" />
+          Credits
+        </button>
+        <p className="text-xs text-zinc-600">Dailynx · v1.0</p>
+      </div>
 
       <ProfileModal open={editing} onClose={() => setEditing(false)} />
+
+      <Modal open={credits} onClose={() => setCredits(false)}>
+        <div className="py-2 text-center">
+          <div className="mb-4 flex justify-center">
+            <span className="text-4xl">❤️</span>
+          </div>
+          <p className="text-lg font-semibold text-white">
+            Made with ❤️ by Vaibhav Sen
+          </p>
+          <a
+            href="mailto:cheeseburst06@gmail.com"
+            className="mt-3 inline-flex items-center gap-2 text-sm text-lime transition hover:brightness-110"
+          >
+            <Mail className="h-4 w-4" />
+            cheeseburst06@gmail.com
+          </a>
+        </div>
+
+        <button
+          onClick={() => setCredits(false)}
+          className="mt-6 w-full rounded-xl bg-lime py-3 font-semibold text-ink transition hover:brightness-95"
+        >
+          Close
+        </button>
+      </Modal>
     </div>
   );
 }

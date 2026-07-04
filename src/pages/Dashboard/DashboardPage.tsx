@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -11,15 +12,29 @@ import {
 import ProgressRing from "../../components/dashboard/ProgressRing";
 import TodoList from "../../components/dashboard/TodoList";
 import HabitCard from "../../components/habits/HabitCard";
+import ConfirmModal from "../../components/ui/ConfirmModal";
 import { useHabits } from "../../contexts/HabitsContext";
 import { useTodos } from "../../hooks/useTodos";
+import type { Habit } from "../../services/habitService";
 import { currentStreak, monthlyCount } from "../../utils/streak";
 
 function DashboardPage() {
   const { habits, today, toggleHabit } = useHabits();
   const { todos, addTodo, toggleTodo, removeTodo } = useTodos();
 
+  // Habit pending an "uncheck" confirmation.
+  const [uncheckTarget, setUncheckTarget] = useState<Habit | null>(null);
+
   const isDoneToday = (dates: string[]) => dates.includes(today);
+
+  // Checking is instant; unchecking asks for confirmation first.
+  const handleToggle = (habit: Habit) => {
+    if (isDoneToday(habit.completedDates)) {
+      setUncheckTarget(habit);
+    } else {
+      toggleHabit(habit.id);
+    }
+  };
 
   const completed = habits.filter((h) => isDoneToday(h.completedDates)).length;
   const progress = habits.length
@@ -117,7 +132,7 @@ function DashboardPage() {
                     completed={isDoneToday(habit.completedDates)}
                     currentStreak={currentStreak(habit.completedDates, today)}
                     monthlyCount={monthlyCount(habit.completedDates)}
-                    onToggle={() => toggleHabit(habit.id)}
+                    onToggle={() => handleToggle(habit)}
                   />
                 ))}
               </AnimatePresence>
@@ -134,6 +149,19 @@ function DashboardPage() {
           />
         </section>
       </div>
+
+      <ConfirmModal
+        open={!!uncheckTarget}
+        title="Uncheck this habit?"
+        message={
+          uncheckTarget
+            ? `Do you really want to uncheck "${uncheckTarget.title}"? This removes today's completion and may break your streak.`
+            : ""
+        }
+        confirmLabel="Uncheck"
+        onConfirm={() => uncheckTarget && toggleHabit(uncheckTarget.id)}
+        onClose={() => setUncheckTarget(null)}
+      />
     </div>
   );
 }
