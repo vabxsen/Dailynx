@@ -3,17 +3,22 @@ import { motion } from "framer-motion";
 
 import { NAV_ITEMS } from "./nav";
 import InstallButton from "./InstallButton";
+import LevelBadge from "../xp/LevelBadge";
 
 function Sidebar() {
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-white/[0.06] bg-white/[0.015] p-5 md:flex">
-      <div className="mb-10 flex items-center gap-2.5 px-2">
+      <div className="mb-6 flex items-center gap-2.5 px-2">
         <img
           src="/app-icon.png"
           alt="Dailynx"
           className="h-9 w-9 rounded-xl"
         />
         <h1 className="text-xl font-bold tracking-tight text-white">Dailynx</h1>
+      </div>
+
+      <div className="mb-4">
+        <LevelBadge />
       </div>
 
       <nav className="flex-1 space-y-1">

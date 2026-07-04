@@ -20,6 +20,10 @@ export interface Habit {
   time: string; // "HH:MM" (24h) — used to sort the time table
   createdAt: number;
   completedDates: string[]; // local "YYYY-MM-DD" strings, one per completed day
+  // Dates XP has already been granted for. Only ever grows — unlike
+  // completedDates, unchecking a habit never removes an entry, so XP stays
+  // permanent even if the same day is toggled on and off again.
+  xpAwardedDates: string[];
 }
 
 /** Sorts habits by scheduled time; habits without a time go last. */
@@ -41,6 +45,7 @@ export async function getHabits(uid: string): Promise<Habit[]> {
       ...(docSnap.data() as Omit<Habit, "id">),
       // Guard against older docs written before these fields existed.
       completedDates: (docSnap.data().completedDates as string[]) ?? [],
+      xpAwardedDates: (docSnap.data().xpAwardedDates as string[]) ?? [],
       time: (docSnap.data().time as string) ?? "",
     }))
     .sort(byTime);
@@ -54,6 +59,7 @@ export async function addHabit(uid: string, title: string, time: string) {
     completed: false,
     createdAt: Date.now(),
     completedDates: [],
+    xpAwardedDates: [],
   });
 }
 

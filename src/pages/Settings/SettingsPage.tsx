@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pencil, LogOut, Smartphone, Heart, Mail } from "lucide-react";
+import { Pencil, LogOut, Smartphone, Heart, Mail, Zap } from "lucide-react";
 
 import PageHeader from "../../components/layout/PageHeader";
 import InstallButton from "../../components/layout/InstallButton";
@@ -7,10 +7,12 @@ import ProfileModal from "../../components/profile/ProfileModal";
 import Modal from "../../components/ui/Modal";
 import { useAuth } from "../../contexts/AuthContext";
 import { useProfile } from "../../contexts/ProfileContext";
+import { useXp } from "../../contexts/XPContext";
 
 function SettingsPage() {
   const { user, logout } = useAuth();
   const { profile, displayName } = useProfile();
+  const { level, habitXpReward, taskXpReward, setXpRewards } = useXp();
   const [editing, setEditing] = useState(false);
   const [credits, setCredits] = useState(false);
 
@@ -76,6 +78,55 @@ function SettingsPage() {
           <div className="sm:w-44">
             <InstallButton />
           </div>
+        </div>
+      </Section>
+
+      {/* XP & Levels */}
+      <Section title="XP & Levels">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-lime/15 text-lime">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="font-medium text-white">Level {level.level}</p>
+              <p className="text-sm text-zinc-400">
+                {level.totalXp} XP total
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm text-zinc-400">XP per habit check-in</span>
+            <input
+              type="number"
+              min={0}
+              value={habitXpReward}
+              onChange={(e) =>
+                setXpRewards({
+                  habitXpReward: Math.max(0, Number(e.target.value) || 0),
+                })
+              }
+              className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-white outline-none focus:border-lime/50"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-sm text-zinc-400">XP per task completed</span>
+            <input
+              type="number"
+              min={0}
+              value={taskXpReward}
+              onChange={(e) =>
+                setXpRewards({
+                  taskXpReward: Math.max(0, Number(e.target.value) || 0),
+                })
+              }
+              className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-white outline-none focus:border-lime/50"
+            />
+          </label>
         </div>
       </Section>
 

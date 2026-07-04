@@ -4,12 +4,28 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // Profiles: a user can only read and write their own profile document.
+    // XP is permanent, so a profile update can never lower xpTotal.
     match /users/{userId} {
-      allow read, write: if request.auth != null
+      allow read: if request.auth != null
+        && request.auth.uid == userId;
+
+      allow create: if request.auth != null
+        && request.auth.uid == userId;
+
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && (
+          !('xpTotal' in request.resource.data)
+          || !('xpTotal' in resource.data)
+          || request.resource.data.xpTotal >= resource.data.xpTotal
+        );
+
+      allow delete: if request.auth != null
         && request.auth.uid == userId;
     }
 
     // To-dos: a signed-in user may only touch documents they own.
+    // Once xpAwarded is true it can never be flipped back to false.
     match /todos/{todoId} {
       allow read, delete: if request.auth != null
         && resource.data.uid == request.auth.uid;
@@ -17,10 +33,15 @@ service cloud.firestore {
         && request.resource.data.uid == request.auth.uid;
       allow update: if request.auth != null
         && resource.data.uid == request.auth.uid
-        && request.resource.data.uid == request.auth.uid;
+        && request.resource.data.uid == request.auth.uid
+        && (
+          resource.data.xpAwarded != true
+          || request.resource.data.xpAwarded == true
+        );
     }
 
     // Habits: a signed-in user may only touch documents they own.
+    // xpAwardedDates only ever grows — an update can never shrink it.
     match /habits/{habitId} {
       // Reading / deleting an existing doc: it must already belong to you.
       allow read, delete: if request.auth != null
@@ -33,7 +54,12 @@ service cloud.firestore {
       // Updating: you own the current doc and can't reassign it to someone else.
       allow update: if request.auth != null
         && resource.data.uid == request.auth.uid
-        && request.resource.data.uid == request.auth.uid;
+        && request.resource.data.uid == request.auth.uid
+        && (
+          !('xpAwardedDates' in resource.data)
+          || !('xpAwardedDates' in request.resource.data)
+          || request.resource.data.xpAwardedDates.size() >= resource.data.xpAwardedDates.size()
+        );
     }
   }
 }

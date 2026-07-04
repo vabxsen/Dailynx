@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 
 import { useAuth } from "../../contexts/AuthContext";
 import { useProfile } from "../../contexts/ProfileContext";
+import LevelBadge from "../xp/LevelBadge";
 
 type Props = {
   onOpenProfile: () => void;
@@ -41,25 +42,29 @@ function Navbar({ onOpenProfile }: Props) {
         </div>
       </div>
 
-      <motion.button
-        whileTap={{ scale: 0.95 }}
-        onClick={onOpenProfile}
-        aria-label="Open profile"
-        className="rounded-full ring-2 ring-transparent transition hover:ring-lime/50"
-      >
-        {user?.photoURL ? (
-          <img
-            src={user.photoURL}
-            alt=""
-            referrerPolicy="no-referrer"
-            className="h-10 w-10 rounded-full border border-white/10 object-cover"
-          />
-        ) : (
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-lime text-base font-bold text-ink">
-            {initial}
-          </span>
-        )}
-      </motion.button>
+      <div className="flex items-center gap-3">
+        <LevelBadge className="hidden sm:flex md:hidden w-36" />
+
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={onOpenProfile}
+          aria-label="Open profile"
+          className="rounded-full ring-2 ring-transparent transition hover:ring-lime/50"
+        >
+          {user?.photoURL ? (
+            <img
+              src={user.photoURL}
+              alt=""
+              referrerPolicy="no-referrer"
+              className="h-10 w-10 rounded-full border border-white/10 object-cover"
+            />
+          ) : (
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-lime text-base font-bold text-ink">
+              {initial}
+            </span>
+          )}
+        </motion.button>
+      </div>
     </header>
   );
 }

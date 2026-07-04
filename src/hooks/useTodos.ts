@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../contexts/AuthContext";
+import { useXp } from "../contexts/XPContext";
 import {
   getTodos,
   addTodo as addToFirestore,
@@ -9,9 +10,11 @@ import {
   sortTodos,
   type Todo,
 } from "../services/todoService";
+import { awardTodoXp } from "../services/xpService";
 
 export function useTodos() {
   const { user } = useAuth();
+  const { taskXpReward } = useXp();
   const [todos, setTodos] = useState<Todo[]>([]);
 
   useEffect(() => {
@@ -38,13 +41,21 @@ export function useTodos() {
 
   const toggleTodo = async (id: string) => {
     const todo = todos.find((t) => t.id === id);
-    if (!todo) return;
+    if (!todo || !user) return;
+
+    const done = !todo.done;
 
     setTodos((prev) =>
-      sortTodos(prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)))
+      sortTodos(prev.map((t) => (t.id === id ? { ...t, done } : t)))
     );
 
-    await toggleInFirestore(id, !todo.done);
+    await toggleInFirestore(id, done);
+
+    // Unchecking never touches XP — it's only ever granted once, permanently,
+    // the first time a task is marked done.
+    if (done) {
+      await awardTodoXp(user.uid, id, taskXpReward);
+    }
   };
 
   const removeTodo = async (id: string) => {

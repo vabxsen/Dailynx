@@ -13,6 +13,7 @@ import ProgressRing from "../../components/dashboard/ProgressRing";
 import TodoList from "../../components/dashboard/TodoList";
 import HabitCard from "../../components/habits/HabitCard";
 import ConfirmModal from "../../components/ui/ConfirmModal";
+import XPBar from "../../components/xp/XPBar";
 import { useHabits } from "../../contexts/HabitsContext";
 import { useTodos } from "../../hooks/useTodos";
 import type { Habit } from "../../services/habitService";
@@ -96,6 +97,8 @@ function DashboardPage() {
           </div>
         </div>
       </motion.section>
+
+      <XPBar />
 
       {/* Habits + To-dos */}
       <div className="grid gap-6 lg:grid-cols-2">

@@ -13,6 +13,7 @@ import { Flame } from "lucide-react";
 
 import PageHeader from "../../components/layout/PageHeader";
 import { useHabits } from "../../contexts/HabitsContext";
+import { useXp } from "../../contexts/XPContext";
 import { lastNDays } from "../../utils/date";
 import { currentStreak, bestStreak } from "../../utils/streak";
 
@@ -20,6 +21,7 @@ const LIME = "#c6ff34";
 
 function AnalyticsPage() {
   const { habits, today } = useHabits();
+  const { level } = useXp();
 
   const completionsOn = (key: string) =>
     habits.filter((h) => h.completedDates.includes(key)).length;
@@ -79,11 +81,13 @@ function AnalyticsPage() {
     <div className="space-y-6">
       <PageHeader title="Analytics" subtitle="Your progress over time." />
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
         <MiniStat label="Total check-ins" value={`${totalCompletions}`} />
         <MiniStat label="Active habits" value={`${habits.length}`} />
         <MiniStat label="7-day rate" value={`${weekRate}%`} highlight />
         <MiniStat label="Longest streak" value={`${longestStreak}d`} />
+        <MiniStat label="Level" value={`${level.level}`} highlight />
+        <MiniStat label="Total XP" value={`${level.totalXp}`} />
       </div>
 
       <Card title="Last 7 days">

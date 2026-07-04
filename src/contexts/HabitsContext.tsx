@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import { useAuth } from "./AuthContext";
+import { useXp } from "./XPContext";
 import type { Habit } from "../services/habitService";
 import {
   getHabits,
@@ -16,6 +17,7 @@ import {
   updateHabit as updateHabitInFirestore,
   deleteHabit as deleteHabitFromFirestore,
 } from "../services/habitService";
+import { awardHabitXp } from "../services/xpService";
 import { todayKey } from "../utils/date";
 
 interface HabitsContextType {
@@ -32,6 +34,7 @@ const HabitsContext = createContext<HabitsContextType | null>(null);
 
 export function HabitsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const { habitXpReward } = useXp();
 
   const [habits, setHabits] = useState<Habit[]>([]);
   const [today, setToday] = useState(todayKey());
@@ -85,7 +88,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
 
   const toggleHabit = async (id: string) => {
     const habit = habits.find((h) => h.id === id);
-    if (!habit) return;
+    if (!habit || !user) return;
 
     const done = !habit.completedDates.includes(today);
 
@@ -103,6 +106,12 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     );
 
     await setCompletion(id, today, done);
+
+    // Unchecking never touches XP — it's only ever granted once per date,
+    // permanently, the first time a habit is marked done for that day.
+    if (done) {
+      await awardHabitXp(user.uid, id, today, habitXpReward);
+    }
   };
 
   const editHabit = async (

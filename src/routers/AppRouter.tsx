@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { useAuth } from "../contexts/AuthContext";
 import { ProfileProvider } from "../contexts/ProfileContext";
+import { XPProvider } from "../contexts/XPContext";
 import { HabitsProvider } from "../contexts/HabitsContext";
 
 import MainLayout from "../layouts/MainLayout";
@@ -53,9 +54,11 @@ export default function AppRouter() {
           element={
             <ProtectedRoute>
               <ProfileProvider>
-                <HabitsProvider>
-                  <MainLayout />
-                </HabitsProvider>
+                <XPProvider>
+                  <HabitsProvider>
+                    <MainLayout />
+                  </HabitsProvider>
+                </XPProvider>
               </ProfileProvider>
             </ProtectedRoute>
           }

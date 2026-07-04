@@ -6,6 +6,7 @@ import Sidebar from "../components/layout/Sidebar";
 import BottomNav from "../components/layout/BottomNav";
 import Navbar from "../components/layout/Navbar";
 import ProfileModal from "../components/profile/ProfileModal";
+import LevelUpOverlay from "../components/xp/LevelUpOverlay";
 
 function MainLayout() {
   const location = useLocation();
@@ -36,6 +37,7 @@ function MainLayout() {
       <BottomNav />
 
       <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} />
+      <LevelUpOverlay />
     </div>
   );
 }
