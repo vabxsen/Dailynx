@@ -4,7 +4,7 @@ A personal, installable habit tracker — build your daily time table, check off
 habits, and watch your streaks grow. Everything syncs to the cloud and works
 offline as a PWA.
 
-**Live app:** https://lifeos-92f2c.web.app
+**Live app:** https://dailynx.web.app/
 
 ## Features
 
