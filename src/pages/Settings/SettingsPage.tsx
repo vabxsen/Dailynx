@@ -5,6 +5,7 @@ import PageHeader from "../../components/layout/PageHeader";
 import InstallButton from "../../components/layout/InstallButton";
 import ProfileModal from "../../components/profile/ProfileModal";
 import Modal from "../../components/ui/Modal";
+import ConfirmModal from "../../components/ui/ConfirmModal";
 import { useAuth } from "../../contexts/AuthContext";
 import { useProfile } from "../../contexts/ProfileContext";
 
@@ -13,6 +14,7 @@ function SettingsPage() {
   const { profile, displayName } = useProfile();
   const [editing, setEditing] = useState(false);
   const [credits, setCredits] = useState(false);
+  const [confirmingLogout, setConfirmingLogout] = useState(false);
 
   const initial = displayName.charAt(0).toUpperCase();
 
@@ -87,7 +89,7 @@ function SettingsPage() {
             <p className="truncate text-white">{user?.email}</p>
           </div>
           <button
-            onClick={() => logout()}
+            onClick={() => setConfirmingLogout(true)}
             className="flex shrink-0 items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
           >
             <LogOut className="h-4 w-4" />
@@ -108,6 +110,16 @@ function SettingsPage() {
       </div>
 
       <ProfileModal open={editing} onClose={() => setEditing(false)} />
+
+      <ConfirmModal
+        open={confirmingLogout}
+        title="Log out?"
+        message="Are you sure you want to log out of Dailynx?"
+        confirmLabel="Log out"
+        danger
+        onConfirm={() => logout()}
+        onClose={() => setConfirmingLogout(false)}
+      />
 
       <Modal open={credits} onClose={() => setCredits(false)}>
         <div className="py-2 text-center">
