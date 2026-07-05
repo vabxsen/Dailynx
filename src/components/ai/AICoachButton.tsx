@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 import { useHabits } from "../../contexts/HabitsContext";
 import { useXp } from "../../contexts/XPContext";
@@ -12,7 +12,7 @@ import {
 } from "../../services/aiService";
 import AICoachPanel from "./AICoachPanel";
 
-/** Inline entry point for the AI coach — hidden entirely if no key is configured. */
+/** Compact entry point for the AI coach, sized to sit beside the XP bar. Hidden if no key is configured. */
 function AICoachButton() {
   const { habits, today } = useHabits();
   const { level } = useXp();
@@ -69,21 +69,18 @@ function AICoachButton() {
   return (
     <>
       <motion.button
-        whileTap={{ scale: 0.99 }}
+        whileTap={{ scale: 0.96 }}
         onClick={openCoach}
-        aria-label="Open AI coach"
-        className="group flex w-full items-center gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 text-left transition hover:border-lime/30 hover:bg-white/[0.04]"
+        aria-label="Open Dailynx Coach"
+        title="Dailynx Coach"
+        className="group flex h-full shrink-0 flex-col items-center justify-center gap-2 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-5 py-4 transition hover:border-lime/30 hover:bg-white/[0.04]"
       >
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-lime/15 text-lime">
+        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-lime/15 text-lime transition group-hover:bg-lime/25">
           <Sparkles className="h-5 w-5" />
         </span>
-        <div className="min-w-0 flex-1">
-          <p className="font-semibold text-white">Dailynx Coach</p>
-          <p className="text-sm text-zinc-400">
-            Get a motivational nudge or ask how to use the app.
-          </p>
-        </div>
-        <ArrowRight className="h-5 w-5 shrink-0 text-zinc-500 transition group-hover:text-lime" />
+        <span className="text-xs font-medium text-zinc-400 transition group-hover:text-lime">
+          Coach
+        </span>
       </motion.button>
 
       <AICoachPanel

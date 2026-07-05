@@ -99,7 +99,12 @@ function DashboardPage() {
         </div>
       </motion.section>
 
-      <XPBar />
+      <div className="flex items-stretch gap-4">
+        <div className="min-w-0 flex-1">
+          <XPBar />
+        </div>
+        <AICoachButton />
+      </div>
 
       {/* Habits + To-dos */}
       <div className="grid gap-6 lg:grid-cols-2">
@@ -153,8 +158,6 @@ function DashboardPage() {
           />
         </section>
       </div>
-
-      <AICoachButton />
 
       <ConfirmModal
         open={!!uncheckTarget}
