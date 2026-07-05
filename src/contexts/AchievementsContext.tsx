@@ -14,9 +14,15 @@ import type { UnlockedAchievementsMap } from "../services/achievementService";
 
 interface AchievementsContextType {
   unlocked: UnlockedAchievementsMap;
-  /** IDs unlocked since the last dismiss, shown one at a time by the celebration overlay. */
+  /**
+   * IDs unlocked since the last dismiss. Shown together as one combined
+   * celebration (not one popup per ID) — a burst of retroactive unlocks
+   * (e.g. several thresholds crossed at once by existing history) would
+   * otherwise queue a full-screen overlay every few seconds as the user
+   * tries to navigate elsewhere.
+   */
   newlyUnlockedIds: string[];
-  dismissOldest: () => void;
+  dismissAll: () => void;
 }
 
 const AchievementsContext = createContext<AchievementsContextType | null>(null);
@@ -52,10 +58,10 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, [user]);
 
-  const dismissOldest = () => setNewlyUnlockedIds((prev) => prev.slice(1));
+  const dismissAll = () => setNewlyUnlockedIds([]);
 
   return (
-    <AchievementsContext.Provider value={{ unlocked, newlyUnlockedIds, dismissOldest }}>
+    <AchievementsContext.Provider value={{ unlocked, newlyUnlockedIds, dismissAll }}>
       {children}
     </AchievementsContext.Provider>
   );

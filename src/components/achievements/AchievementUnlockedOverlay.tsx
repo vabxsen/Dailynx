@@ -3,31 +3,41 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Award } from "lucide-react";
 
 import { useAchievements } from "../../contexts/AchievementsContext";
-import { ACHIEVEMENTS } from "../../utils/achievements";
+import { ACHIEVEMENTS, type AchievementDef } from "../../utils/achievements";
 
-/** One-time celebration for each newly-unlocked achievement, shown one at a time. */
+/**
+ * One-time celebration for newly-unlocked achievements. Shows every pending
+ * unlock together as a single card (not one popup per achievement) — a
+ * retroactive burst of several at once shouldn't turn into a string of
+ * full-screen takeovers interrupting navigation.
+ */
 function AchievementUnlockedOverlay() {
-  const { newlyUnlockedIds, dismissOldest } = useAchievements();
-  const currentId = newlyUnlockedIds[0] ?? null;
-  const achievement = currentId ? ACHIEVEMENTS.find((a) => a.id === currentId) ?? null : null;
+  const { newlyUnlockedIds, dismissAll } = useAchievements();
+
+  const achievements = newlyUnlockedIds
+    .map((id) => ACHIEVEMENTS.find((a) => a.id === id))
+    .filter((a): a is AchievementDef => a !== undefined);
+
+  const totalXp = achievements.reduce((sum, a) => sum + a.xpReward, 0);
 
   useEffect(() => {
-    if (!currentId) return;
+    if (achievements.length === 0) return;
 
-    const timer = setTimeout(dismissOldest, 3200);
+    const timer = setTimeout(dismissAll, 3800);
     return () => clearTimeout(timer);
-  }, [currentId, dismissOldest]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newlyUnlockedIds.join(","), dismissAll]);
 
   return (
     <AnimatePresence>
-      {achievement && (
+      {achievements.length > 0 && (
         <motion.div
-          key={achievement.id}
+          key="achievement-unlock"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          onClick={dismissOldest}
+          onClick={dismissAll}
           className="fixed inset-0 z-50 flex cursor-pointer items-center justify-center bg-ink/80 backdrop-blur-sm"
         >
           <motion.div
@@ -35,7 +45,7 @@ function AchievementUnlockedOverlay() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92 }}
             transition={{ type: "spring", stiffness: 260, damping: 22 }}
-            className="mx-6 flex flex-col items-center gap-3 rounded-3xl border border-lime/20 bg-gradient-to-br from-white/[0.06] to-transparent p-8 text-center shadow-[0_0_80px_-20px_rgba(198,255,52,0.5)]"
+            className="mx-6 flex max-w-sm flex-col items-center gap-3 rounded-3xl border border-lime/20 bg-gradient-to-br from-white/[0.06] to-transparent p-8 text-center shadow-[0_0_80px_-20px_rgba(198,255,52,0.5)]"
           >
             <motion.span
               initial={{ scale: 0.6, rotate: -8 }}
@@ -52,26 +62,48 @@ function AchievementUnlockedOverlay() {
               transition={{ delay: 0.2, duration: 0.4 }}
               className="text-sm font-medium uppercase tracking-wide text-zinc-400"
             >
-              Achievement unlocked!
+              {achievements.length === 1
+                ? "Achievement unlocked!"
+                : `${achievements.length} achievements unlocked!`}
             </motion.p>
 
-            <motion.p
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.28, duration: 0.4 }}
-              className="text-2xl font-bold text-white"
-            >
-              {achievement.title}
-            </motion.p>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.36, duration: 0.4 }}
-              className="max-w-xs text-sm text-zinc-400"
-            >
-              {achievement.description}
-            </motion.p>
+            {achievements.length === 1 ? (
+              <>
+                <motion.p
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.28, duration: 0.4 }}
+                  className="text-2xl font-bold text-white"
+                >
+                  {achievements[0].title}
+                </motion.p>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.36, duration: 0.4 }}
+                  className="text-sm text-zinc-400"
+                >
+                  {achievements[0].description}
+                </motion.p>
+              </>
+            ) : (
+              <motion.ul
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.28, duration: 0.4 }}
+                className="w-full space-y-1.5 text-left"
+              >
+                {achievements.map((a) => (
+                  <li
+                    key={a.id}
+                    className="flex items-center justify-between rounded-xl bg-white/[0.04] px-3 py-2 text-sm"
+                  >
+                    <span className="font-medium text-white">{a.title}</span>
+                    <span className="text-xs text-zinc-500">+{a.xpReward} XP</span>
+                  </li>
+                ))}
+              </motion.ul>
+            )}
 
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
@@ -79,7 +111,7 @@ function AchievementUnlockedOverlay() {
               transition={{ delay: 0.44, duration: 0.4 }}
               className="rounded-full bg-lime/10 px-3 py-1 text-xs font-semibold text-lime"
             >
-              +{achievement.xpReward} XP
+              +{totalXp} XP total
             </motion.span>
 
             <p className="mt-1 text-xs text-zinc-500">Tap anywhere to dismiss</p>
