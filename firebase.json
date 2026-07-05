@@ -2,15 +2,29 @@
   "firestore": {
     "rules": "firestore.rules"
   },
-  "hosting": {
-    "site": "dailynx",
-    "public": "dist",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  }
+  "hosting": [
+    {
+      "site": "dailynx",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "site": "lifeos-92f2c",
+      "public": "redirect",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "redirects": [
+        {
+          "source": "**",
+          "destination": "https://dailynx.web.app",
+          "type": 301
+        }
+      ]
+    }
+  ]
 }
