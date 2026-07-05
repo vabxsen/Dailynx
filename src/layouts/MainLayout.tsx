@@ -8,7 +8,6 @@ import Navbar from "../components/layout/Navbar";
 import ProfileModal from "../components/profile/ProfileModal";
 import LevelUpOverlay from "../components/xp/LevelUpOverlay";
 import AchievementUnlockedOverlay from "../components/achievements/AchievementUnlockedOverlay";
-import AICoachButton from "../components/ai/AICoachButton";
 
 function MainLayout() {
   const location = useLocation();
@@ -41,7 +40,6 @@ function MainLayout() {
       <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} />
       <LevelUpOverlay />
       <AchievementUnlockedOverlay />
-      <AICoachButton />
     </div>
   );
 }

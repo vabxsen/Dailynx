@@ -14,6 +14,7 @@ import TodoList from "../../components/dashboard/TodoList";
 import HabitCard from "../../components/habits/HabitCard";
 import ConfirmModal from "../../components/ui/ConfirmModal";
 import XPBar from "../../components/xp/XPBar";
+import AICoachButton from "../../components/ai/AICoachButton";
 import { useHabits } from "../../contexts/HabitsContext";
 import { useTodos } from "../../hooks/useTodos";
 import type { Habit } from "../../services/habitService";
@@ -152,6 +153,8 @@ function DashboardPage() {
           />
         </section>
       </div>
+
+      <AICoachButton />
 
       <ConfirmModal
         open={!!uncheckTarget}
