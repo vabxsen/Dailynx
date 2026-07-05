@@ -79,7 +79,7 @@ function AICoachButton() {
           <Sparkles className="h-5 w-5" />
         </span>
         <span className="text-xs font-medium text-zinc-400 transition group-hover:text-lime">
-          Coach
+          AI Coach
         </span>
       </motion.button>
 
