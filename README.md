@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/app-icon.png" alt="Dailynx logo" width="112" height="112" />
+  <img src="public/pwa-512.png" alt="Dailynx logo" width="112" height="112" />
 </p>
 
 <h1 align="center">Dailynx</h1>
