@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Award } from "lucide-react";
 
@@ -13,6 +14,8 @@ import { ACHIEVEMENTS, type AchievementDef } from "../../utils/achievements";
  */
 function AchievementUnlockedOverlay() {
   const { newlyUnlockedIds, dismissAll } = useAchievements();
+  const location = useLocation();
+  const lastPath = useRef(location.pathname);
 
   const achievements = newlyUnlockedIds
     .map((id) => ACHIEVEMENTS.find((a) => a.id === id))
@@ -28,6 +31,16 @@ function AchievementUnlockedOverlay() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newlyUnlockedIds.join(","), dismissAll]);
 
+  // Dismiss on navigation so a lingering celebration never sits over the
+  // next page. (The backdrop is non-blocking, so the nav tap that triggered
+  // the change already went through.)
+  useEffect(() => {
+    if (location.pathname !== lastPath.current) {
+      lastPath.current = location.pathname;
+      dismissAll();
+    }
+  }, [location.pathname, dismissAll]);
+
   return (
     <AnimatePresence>
       {achievements.length > 0 && (
@@ -37,15 +50,15 @@ function AchievementUnlockedOverlay() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          onClick={dismissAll}
-          className="fixed inset-0 z-50 flex cursor-pointer items-center justify-center bg-ink/80 backdrop-blur-sm"
+          className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-ink/80 backdrop-blur-sm"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.85, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92 }}
             transition={{ type: "spring", stiffness: 260, damping: 22 }}
-            className="mx-6 flex max-w-sm flex-col items-center gap-3 rounded-3xl border border-lime/20 bg-gradient-to-br from-white/[0.06] to-transparent p-8 text-center shadow-[0_0_80px_-20px_rgba(198,255,52,0.5)]"
+            onClick={dismissAll}
+            className="pointer-events-auto mx-6 flex max-w-sm cursor-pointer flex-col items-center gap-3 rounded-3xl border border-lime/20 bg-gradient-to-br from-white/[0.06] to-transparent p-8 text-center shadow-[0_0_80px_-20px_rgba(198,255,52,0.5)]"
           >
             <motion.span
               initial={{ scale: 0.6, rotate: -8 }}
@@ -114,7 +127,7 @@ function AchievementUnlockedOverlay() {
               +{totalXp} XP total
             </motion.span>
 
-            <p className="mt-1 text-xs text-zinc-500">Tap anywhere to dismiss</p>
+            <p className="mt-1 text-xs text-zinc-500">Tap to dismiss</p>
           </motion.div>
         </motion.div>
       )}
