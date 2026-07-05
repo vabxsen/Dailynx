@@ -5,6 +5,7 @@ import { ProfileProvider } from "../contexts/ProfileContext";
 import { XPProvider } from "../contexts/XPContext";
 import { HabitsProvider } from "../contexts/HabitsContext";
 import { SleepProvider } from "../contexts/SleepContext";
+import { AchievementsProvider } from "../contexts/AchievementsContext";
 
 import MainLayout from "../layouts/MainLayout";
 import Login from "../pages/Login/Login";
@@ -13,6 +14,7 @@ import HabitsPage from "../pages/Habits/HabitsPage";
 import AnalyticsPage from "../pages/Analytics/AnalyticsPage";
 import CalendarPage from "../pages/Calendar/CalendarPage";
 import SleepPage from "../pages/Sleep/SleepPage";
+import AchievementsPage from "../pages/Achievements/AchievementsPage";
 import SettingsPage from "../pages/Settings/SettingsPage";
 
 function FullScreenLoader() {
@@ -57,11 +59,13 @@ export default function AppRouter() {
             <ProtectedRoute>
               <ProfileProvider>
                 <XPProvider>
-                  <HabitsProvider>
-                    <SleepProvider>
-                      <MainLayout />
-                    </SleepProvider>
-                  </HabitsProvider>
+                  <AchievementsProvider>
+                    <HabitsProvider>
+                      <SleepProvider>
+                        <MainLayout />
+                      </SleepProvider>
+                    </HabitsProvider>
+                  </AchievementsProvider>
                 </XPProvider>
               </ProfileProvider>
             </ProtectedRoute>
@@ -72,6 +76,7 @@ export default function AppRouter() {
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/sleep" element={<SleepPage />} />
+          <Route path="/achievements" element={<AchievementsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
 

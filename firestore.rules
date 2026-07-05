@@ -8,10 +8,11 @@ service cloud.firestore {
     }
 
     // Profiles: a user can only read and write their own profile document.
-    // XP is permanent, so a profile update can never lower xpTotal. A
-    // username is free to set once, then locked after one change: it may
-    // only change again if it was empty, or if usernameEditsUsed < 1, and
-    // usernameEditsUsed can only ever move forward by exactly the right step.
+    // XP is permanent, so a profile update can never lower xpTotal, and
+    // unlockedAchievements can never shrink. A username is free to set once,
+    // then locked after one change: it may only change again if it was
+    // empty, or if usernameEditsUsed < 1, and usernameEditsUsed can only
+    // ever move forward by exactly the right step.
     match /users/{userId} {
       allow read: if request.auth != null
         && request.auth.uid == userId;
@@ -27,6 +28,11 @@ service cloud.firestore {
           !('xpTotal' in request.resource.data)
           || !('xpTotal' in resource.data)
           || request.resource.data.xpTotal >= resource.data.xpTotal
+        )
+        && (
+          !('unlockedAchievements' in request.resource.data)
+          || !('unlockedAchievements' in resource.data)
+          || request.resource.data.unlockedAchievements.size() >= resource.data.unlockedAchievements.size()
         )
         && (
           (

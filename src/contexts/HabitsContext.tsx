@@ -18,6 +18,7 @@ import {
   deleteHabit as deleteHabitFromFirestore,
 } from "../services/habitService";
 import { awardHabitXp } from "../services/xpService";
+import { evaluateAndUnlockAchievements } from "../services/achievementService";
 import { todayKey } from "../utils/date";
 
 interface HabitsContextType {
@@ -46,6 +47,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     const data = await getHabits(user.uid);
     setHabits(data);
     setLoading(false);
+    await evaluateAndUnlockAchievements(user.uid, data);
   }, [user]);
 
   useEffect(() => {
@@ -59,6 +61,9 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
         setHabits(data);
         setLoading(false);
       }
+      // Catches achievements already earned by history synced from another
+      // device, even if this tab never calls refresh()/toggleHabit().
+      await evaluateAndUnlockAchievements(user.uid, data);
     })();
 
     return () => {
@@ -92,25 +97,25 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
 
     const done = !habit.completedDates.includes(today);
 
-    setHabits((prev) =>
-      prev.map((h) =>
-        h.id === id
-          ? {
-              ...h,
-              completedDates: done
-                ? [...h.completedDates, today]
-                : h.completedDates.filter((d) => d !== today),
-            }
-          : h
-      )
+    const updatedHabits = habits.map((h) =>
+      h.id === id
+        ? {
+            ...h,
+            completedDates: done
+              ? [...h.completedDates, today]
+              : h.completedDates.filter((d) => d !== today),
+          }
+        : h
     );
 
+    setHabits(updatedHabits);
     await setCompletion(id, today, done);
 
-    // Unchecking never touches XP — it's only ever granted once per date,
-    // permanently, the first time a habit is marked done for that day.
+    // Unchecking never touches XP or achievements — they're only ever
+    // granted once, permanently, the first time a habit is marked done.
     if (done) {
       await awardHabitXp(user.uid, id, today, habitXpReward);
+      await evaluateAndUnlockAchievements(user.uid, updatedHabits);
     }
   };
 

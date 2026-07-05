@@ -4,6 +4,7 @@ import {
   BarChart3,
   Calendar,
   Moon,
+  Trophy,
   Settings,
   type LucideIcon,
 } from "lucide-react";
@@ -22,5 +23,6 @@ export const NAV_ITEMS: NavItem[] = [
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/calendar", label: "Calendar", icon: Calendar },
   { to: "/sleep", label: "Sleep", icon: Moon },
+  { to: "/achievements", label: "Awards", icon: Trophy },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
