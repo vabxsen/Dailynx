@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /login
+Disallow: /habits
+Disallow: /analytics
+Disallow: /calendar
+Disallow: /sleep
+Disallow: /achievements
+Disallow: /settings
+
+Sitemap: https://dailynx.web.app/sitemap.xml
