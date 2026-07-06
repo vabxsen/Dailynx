@@ -6,7 +6,55 @@
     <link rel="apple-touch-icon" href="/app-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#020202" />
-    <title>Dailynx</title>
+    <title>Dailynx — Build Better, Every Day</title>
+    <meta
+      name="description"
+      content="A modern, installable habit tracker with streaks, XP levels, achievements, sleep tracking, and an AI coach. Free and synced to the cloud."
+    />
+    <link rel="canonical" href="https://dailynx.web.app/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dailynx.web.app/" />
+    <meta property="og:site_name" content="Dailynx" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Dailynx — Build Better, Every Day" />
+    <meta
+      property="og:description"
+      content="A modern, installable habit tracker with streaks, XP levels, achievements, sleep tracking, and an AI coach."
+    />
+    <meta property="og:image" content="https://dailynx.web.app/pwa-512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Dailynx — Build Better, Every Day" />
+    <meta
+      name="twitter:description"
+      content="A modern, installable habit tracker with streaks, XP levels, achievements, sleep tracking, and an AI coach."
+    />
+    <meta name="twitter:image" content="https://dailynx.web.app/pwa-512.png" />
+
+    <!-- JSON-LD structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Dailynx",
+        "url": "https://dailynx.web.app/",
+        "description": "A modern, installable habit tracker with streaks, XP levels, achievements, sleep tracking, and an AI coach.",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "image": "https://dailynx.web.app/pwa-512.png",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
     <script>
       // Capture the install prompt as early as possible — it can fire before
       // the app bundle mounts. Stash it and let React read it via events.
